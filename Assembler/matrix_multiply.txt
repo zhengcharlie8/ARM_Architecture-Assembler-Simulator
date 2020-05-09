@@ -1,0 +1,55 @@
+    mov r0 512   
+    mov r1 528   
+    mov r2 544   
+    mov r3 8
+    mov r4 4
+
+    mov r16 0 // i = 0
+l1:
+        cmp r16 2 // i < 2
+        b eq l1_done
+
+        mov r17 0 // j = 0
+l2:
+            cmp r17 2 // j < 2
+            b eq l2_done
+
+            mul r26 r16 r3  // r26 = i * 8
+            mul r27 r17 r4  // r27 = j * 4
+            add r26 r26 r2  // &res[i]
+            add r28 r26 r27 // &res[i][j]
+
+            mov r13 0 // counter for res[i][j]
+
+            mov r18 0 // k = 0
+l3:
+                cmp r18 2 // k < 2
+                b eq l3_done
+
+                mul r26 r16 r3  // r26 = i * 8
+                mul r27 r18 r4  // r27 = k * 4
+                add r26 r26 r0  // &m1[i]
+                add r25 r26 r27 // &m1[i][k]
+                ldr 32 r5 r25   // r4 = m1[i][k]
+
+                mul r26 r18 r3  // r26 = k * 8
+                mul r27 r17 r4  // r27 = j * 4
+                add r26 r26 r1  // &m2[k]
+                add r26 r26 r27 // &m2[k][j]
+                ldr 32 r6 r26   // r4 = m2[k][j]
+
+                mul r7 r5 r6
+                add r13 r13 r7
+
+                add r18 r18 1 // k++
+                b al l3
+l3_done:
+            str r13 r28 // store result[i][j]
+
+            add r17 r17 1 // j++
+            b al l2
+l2_done:
+    add r16 r16 1 // i++
+    b al l1
+l1_done:
+    hlt

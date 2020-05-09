@@ -1,0 +1,5 @@
+# object file directory
+.obj
+
+# executables
+arch-sim
